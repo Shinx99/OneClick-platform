@@ -6,7 +6,7 @@
 [![React](https://img.shields.io/badge/React-18-blue.svg)](https://react.dev/)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](https://www.docker.com/)
 
-Đây là repository cấu hình tổng (Home Repo) của dự án **OneClick Platform**. Repository này quản lý toàn bộ cấu hình hạ tầng và cho phép khởi chạy hệ thống Microservices chỉ với một lệnh duy nhất.
+Đây là repository trung tâm (Home Repo) của dự án **OneClick Platform**. Chức năng chính của repository này là cung cấp tài liệu kiến trúc tổng thể và các script hỗ trợ clone nhanh toàn bộ các microservices của dự án về máy local.
 
 ## 📐 Kiến Trúc Hệ Thống
 
@@ -40,7 +40,7 @@ graph TD
 | **Auth Backend** | Spring Boot | `8081` | Quản lý User, Authentication (JWT) | [OneClick-authService-be](https://github.com/Shinx99/OneClick-authService-be) |
 | **Recruitment Backend** | Spring Boot | `8082` | Quản lý việc làm, CV, ứng viên | [OneClick-recruitmentService-be](https://github.com/Shinx99/OneClick-recruitmentService-be) |
 
-*Các thành phần hạ tầng (Eureka, PostgreSQL, Redis, MinIO) được cấu hình tự động thông qua Docker Compose.*
+
 
 ## 📸 Giao Diện Ứng Dụng (Screenshots)
 
@@ -67,36 +67,27 @@ Dưới đây là một số hình ảnh thực tế của hệ thống OneClick
 ## ⚙️ Yêu Cầu Hệ Thống
 
 - **Git** (Để clone source code)
-- **Docker & Docker Compose**
-- Ít nhất **4GB RAM** trống.
 
 ## 🚀 Hướng Dẫn Cài Đặt Nhanh
 
-Chỉ với 3 lệnh đơn giản, hệ thống sẽ tự động được tải về, thiết lập và chạy:
+Chỉ với 2 lệnh đơn giản, hệ thống sẽ tự động tải về toàn bộ source code của dự án:
 
 ```bash
-# 1. Cấp quyền thực thi cho các script (Linux/macOS)
+# 1. Cấp quyền thực thi cho script (Linux/macOS)
 chmod +x *.sh
 
-# 2. Tạo file biến môi trường và sửa đổi (tuỳ chọn)
-cp .env.example .env
-
-# 3. Khởi chạy toàn bộ hệ thống
+# 2. Clone toàn bộ các services
 ./oneclick.sh start
 ```
 
+Sau khi clone xong, source code của các services sẽ nằm trong thư mục `services/`. Bạn vui lòng truy cập vào từng thư mục để xem README cụ thể và tiến hành setup môi trường (`.env`) cũng như khởi chạy (`docker compose up --build`) cho từng service riêng biệt.
+
 ## 🛠 Cách Sử Dụng Master Script (`oneclick.sh`)
 
-Sử dụng script `./oneclick.sh [command]` để điều khiển hệ thống:
+Sử dụng script `./oneclick.sh [command]` để điều khiển:
 
-- `start`: Tự động clone các services, build image và chạy toàn bộ container.
-- `stop`: Dừng toàn bộ hệ thống (có thể tùy chọn xóa hoặc giữ dữ liệu).
-- `restart`: Khởi động lại toàn bộ hệ thống.
-- `build`: Thực hiện build lại các Docker images (dùng khi code thay đổi).
+- `start`: Tự động clone tất cả các services (nếu chưa có).
 - `update`: Kéo (pull) code mới nhất từ tất cả các repository con.
-- `status`: Xem trạng thái các containers đang chạy.
-- `logs`: Xem logs (thời gian thực) của tất cả services.
-- `clean`: **NGUY HIỂM** - Xóa sạch container, network và các volumes (xóa database).
 
 ## 📚 Tài Liệu Chi Tiết
 

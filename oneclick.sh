@@ -32,37 +32,19 @@ show_help() {
     echo -e "${YELLOW}Cách sử dụng:${NC} ./oneclick.sh [command]"
     echo ""
     echo -e "${GREEN}Các lệnh khả dụng:${NC}"
-    echo "  start   - Clone (nếu chưa có), tạo network, build và khởi động toàn bộ services"
-    echo "  stop    - Dừng toàn bộ services (sẽ hỏi trước khi dọn dẹp)"
-    echo "  restart - Khởi động lại toàn bộ services"
-    echo "  build   - Chỉ build Docker images"
-    echo "  status  - Xem trạng thái các containers"
-    echo "  logs    - Xem logs của toàn bộ hệ thống"
-    echo "  update  - Cập nhật code mới nhất từ các repo"
-    echo "  clean   - Xóa toàn bộ containers, network và volumes"
+    echo "  start   - Clone toàn bộ các services (nếu chưa có)"
+    echo "  update  - Kéo code mới nhất (git pull) từ tất cả các repo"
     echo ""
 }
 
 start_services() {
-    echo -e "${CYAN}[1/4] Kiểm tra mã nguồn...${NC}"
+    echo -e "${CYAN}[1/2] Đang clone mã nguồn...${NC}"
     bash ./oneclick-clone.sh
     
-    echo -e "${CYAN}[2/4] Cấu hình và Build...${NC}"
-    bash ./oneclick-build.sh
-    
-    echo -e "${CYAN}[3/4] Khởi động services...${NC}"
-    $DOCKER_COMPOSE_CMD up -d
-    
-    echo -e "${CYAN}[4/4] Hoàn tất!${NC}"
-    echo -e "${GREEN}Hệ thống đang chạy ngầm. Dưới đây là các đường dẫn truy cập:${NC}"
-    echo -e "  - Auth Frontend:        ${BLUE}http://localhost:3000${NC}"
-    echo -e "  - Eureka Server:        ${BLUE}http://localhost:8761${NC}"
-    echo -e "  - API Gateway:          ${BLUE}http://localhost:8080${NC}"
-    echo -e "  - Auth Service:         ${BLUE}http://localhost:8081${NC}"
-    echo -e "  - Recruitment Service:  ${BLUE}http://localhost:8082${NC}"
-    echo -e "  - MinIO Console:        ${BLUE}http://localhost:9001${NC}"
+    echo -e "${CYAN}[2/2] Hoàn tất!${NC}"
+    echo -e "${GREEN}Tất cả các services đã được clone vào thư mục ./services/${NC}"
     echo ""
-    echo -e "${YELLOW}Dùng lệnh './oneclick.sh logs' để xem log hệ thống.${NC}"
+    echo -e "${YELLOW}Vui lòng vào từng thư mục để setup môi trường và chạy dự án theo README của mỗi service.${NC}"
 }
 
 case "$1" in
@@ -70,35 +52,9 @@ case "$1" in
         print_banner
         start_services
         ;;
-    stop)
-        bash ./oneclick-stop.sh
-        ;;
-    restart)
-        bash ./oneclick-stop.sh
-        start_services
-        ;;
-    build)
-        bash ./oneclick-build.sh
-        ;;
-    status)
-        $DOCKER_COMPOSE_CMD ps
-        ;;
-    logs)
-        $DOCKER_COMPOSE_CMD logs -f
-        ;;
     update)
+        print_banner
         bash ./oneclick-clone.sh
-        ;;
-    clean)
-        echo -e "${RED}Cảnh báo: Hành động này sẽ xóa toàn bộ data (Database, Minio).${NC}"
-        echo -e "${YELLOW}Bạn có chắc chắn muốn xóa? (y/N)${NC}"
-        read -r response
-        if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-            $DOCKER_COMPOSE_CMD down -v
-            echo -e "${GREEN}Đã xóa toàn bộ containers, network và volumes.${NC}"
-        else
-            echo -e "${GREEN}Đã hủy thao tác.${NC}"
-        fi
         ;;
     *)
         print_banner
